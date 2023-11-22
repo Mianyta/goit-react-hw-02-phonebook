@@ -16,25 +16,28 @@ export class App extends Component {
     ],
     filter: '',
   };
+}
 
   addContacts = contact => {
     if (this.state.contacts.find(el => el.name === contact.name)) {
       Notify.failure('Contact already exists');
-    } else {
-      Notify.success('Contact ADD');
-      this.setState(prevState => {
-        return {
-          contacts: [...prevState.contacts, { ...contact, id: nanoid(5) }],
-        };
-      });
+      return; // Добавьте return, чтобы прекратить выполнение метода, если контакт уже существует
     }
+    
+    this.setState(prevState => {
+      return {
+        contacts: [...prevState.contacts, { ...contact, id: nanoid(5) }],
+      };
+    });
   };
+  
 
   changeName = value => {
     this.setState({
-      name: value,
+      filter: value,
     });
   };
+  
 
   deleteNumber = id => {
     this.setState(prevState => ({
@@ -43,15 +46,13 @@ export class App extends Component {
   };
 
   getVisibleItems = () => {
-    const { contacts, name } = this.state;
-    if (!name) {
-      return contacts;
-    }
+    const { contacts, filter } = this.state;
+    
     return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(name.toLowerCase())
+      contact.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
-
+  
   render() {
     const visibleItems = this.getVisibleItems();
     return (
@@ -64,4 +65,4 @@ export class App extends Component {
       </div>
     );
   }
-}
+  
